@@ -1,6 +1,7 @@
-package com.epam.training.student_andrii_dolhopolov.i_can_win.pages;
+package com.epam.training.student_andrii_dolhopolov.bring_it_on.pages;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -16,6 +17,8 @@ public class PastebinPage {
     private final WebDriver driver;
     @FindBy(id = "postform-text")
     protected  WebElement codeTexArea;
+    @FindBy(id = "select2-postform-format-container")
+    protected  WebElement syntaxHighlightingListBox;
     @FindBy(id = "select2-postform-expiration-container")
     protected  WebElement pasteExpirationListBox;
     @FindBy(id = "postform-name")
@@ -55,8 +58,22 @@ public class PastebinPage {
         return this;
     }
 
-    public String createNewPaste() {
+    public CreatedPastePage createNewPaste() {
         this.createNewPasteButton.click();
-        return driver.getCurrentUrl();
+        return new CreatedPastePage(driver);
     }
+
+    public PastebinPage setSyntaxHighlighting(String syntaxHighlightingOption) {
+        new Actions(driver)
+                .scrollByAmount(0, 500)
+                .build()
+                .perform();
+        this.syntaxHighlightingListBox.click();
+        WebElement  searchOptionsEditBox = new WebDriverWait(driver, Duration.ofSeconds(30))
+                .until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//input[@class='select2-search__field']")));
+        searchOptionsEditBox.sendKeys(syntaxHighlightingOption);
+        searchOptionsEditBox.sendKeys(Keys.ENTER);
+        return this;
+    }
+
 }
