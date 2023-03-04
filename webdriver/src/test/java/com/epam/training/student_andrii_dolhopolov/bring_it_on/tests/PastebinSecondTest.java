@@ -1,4 +1,4 @@
-package com.epam.training.student_andrii_dolhopolov.bring_it_on.test;
+package com.epam.training.student_andrii_dolhopolov.bring_it_on.tests;
 
 import com.epam.training.student_andrii_dolhopolov.bring_it_on.pages.CreatedPastePage;
 import com.epam.training.student_andrii_dolhopolov.bring_it_on.pages.PastebinPage;
