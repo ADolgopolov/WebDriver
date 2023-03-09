@@ -12,7 +12,7 @@ public class CloudGooglePricingCalculatorPage extends AbstractPage {
 
     private final By mainFrame = By.xpath("//*[@id='cloud-site']/devsite-iframe/iframe");
     private final By innerFrame = By.id("myFrame");
-    @FindBy(xpath = "//input[@id='input_94']")
+    @FindBy(name = "quantity")
     protected WebElement inputNumberOfInstances;
     @FindBy(xpath = "//md-select[contains(@aria-label, 'Operating System')]")
     protected WebElement operatingSystemDropdown;
