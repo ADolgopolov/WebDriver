@@ -1,7 +1,6 @@
 package com.epam.training.student_andrii_dolhopolov.hardcore.pages;
 
 import com.epam.training.student_andrii_dolhopolov.hardcore.models.CalculatorFormTestData;
-import com.epam.training.student_andrii_dolhopolov.hardcore.waits.Waits;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -12,6 +11,7 @@ public class CloudGooglePricingCalculatorPage extends AbstractPage {
 
     private final By mainFrame = By.xpath("//*[@id='cloud-site']/devsite-iframe/iframe");
     private final By innerFrame = By.id("myFrame");
+    private final By GPUTypeDropdown = By.xpath("//md-select[contains(@aria-label, 'GPU type')]");
     @FindBy(name = "quantity")
     protected WebElement inputNumberOfInstances;
     @FindBy(xpath = "//md-select[contains(@aria-label, 'Operating System')]")
@@ -36,100 +36,118 @@ public class CloudGooglePricingCalculatorPage extends AbstractPage {
     protected WebElement addToEstimateButton;
     @FindBy(xpath = "//button[@id='Email Estimate']")
     protected WebElement emailEstimateButton;
-    private final Waits wait;
 
     public CloudGooglePricingCalculatorPage(WebDriver driver) {
         super(driver);
-        wait = new Waits(driver);
     }
 
-    public void switchToInnerFrame() {
-        driver.switchTo().frame(wait.presenceOfElementLocated(mainFrame));
-        driver.switchTo().frame(wait.presenceOfElementLocated(innerFrame));
+    public CloudGooglePricingCalculatorPage switchToInnerFrame() {
+        driver.switchTo().frame(waitPresenceOfElementLocated(mainFrame));
+        driver.switchTo().frame(waitPresenceOfElementLocated(innerFrame));
+        return this;
     }
+
     public CalculatorFormTestData makeCalculationOnPage(CalculatorFormTestData calculatorFormData) {
-        switchToInnerFrame();
-        selectProductName(calculatorFormData.getProductName());
-        inputNumberOfInstances.sendKeys(calculatorFormData.getNumberOfInstances());
-        selectOperatingSystem(calculatorFormData.getOperationSystem());
-        selectVMClass(calculatorFormData.getVMClass());
-        selectInstanceSeries(calculatorFormData.getInstanceSeries());
-        selectInstanceType(calculatorFormData.getInstanceType());
-        scrollToElement(addGPUsCheckBox).click();
-        selectGPUType(calculatorFormData.getGPUType());
-        selectNumberOfGPUs(calculatorFormData.getNumberOfGPUs());
-        selectLocalSSD(calculatorFormData.getLocalSSD());
-        selectDatacenterLocation(calculatorFormData.getRegionDatacenterLocation());
-        selectCommittedUsageTime(calculatorFormData.getCommittedUsage());
-        scrollToElement(addToEstimateButton).click();
-        return returnActualCalculatedData();
+        return switchToInnerFrame()
+                .selectProductName(calculatorFormData.getProductName())
+                .setNumberOfInstances(calculatorFormData.getNumberOfInstances())
+                .selectOperatingSystem(calculatorFormData.getOperationSystem())
+                .selectVMClass(calculatorFormData.getVMClass())
+                .selectInstanceSeries(calculatorFormData.getInstanceSeries())
+                .selectInstanceType(calculatorFormData.getInstanceType())
+                .selectAddGPUsCheckBox()
+                .selectGPUType(calculatorFormData.getGPUType())
+                .selectNumberOfGPUs(calculatorFormData.getNumberOfGPUs())
+                .selectLocalSSD(calculatorFormData.getLocalSSD())
+                .selectDatacenterLocation(calculatorFormData.getRegionDatacenterLocation())
+                .selectCommittedUsageTime(calculatorFormData.getCommittedUsage())
+                .clickAddToEstimateButton()
+                .returnActualCalculatedData();
     }
 
-    protected void selectDropdownOption(String option) {
-        WebElement dropdownOption =
-                wait.presenceOfElementLocated(By.xpath(String.format("//div[contains(@class, 'md-active')]//md-option/div[contains(text(), '%s')]", option)));
-        dropdownOption.click();
-        wait.invisibilityOf(dropdownOption);
-    }
-
-    protected void selectProductName(String productName) {
-        wait.presenceOfElementLocated(By.xpath(String.format("//md-tab-item[normalize-space()='%s']", productName)))
+    public CloudGooglePricingCalculatorPage selectProductName(String productName) {
+        waitPresenceOfElementLocated(By.xpath(String.format("//md-tab-item[normalize-space()='%s']", productName)))
                 .click();
+        return this;
     }
 
-    protected void selectOperatingSystem(String operatingSystem) {
-        scrollToElement(operatingSystemDropdown).click();
+    public CloudGooglePricingCalculatorPage setNumberOfInstances(String numberOfInstances) {
+        inputNumberOfInstances.sendKeys(numberOfInstances);
+        return this;
+    }
+
+    public CloudGooglePricingCalculatorPage selectOperatingSystem(String operatingSystem) {
+        operatingSystemDropdown.click();
         selectDropdownOption(operatingSystem);
+        return this;
     }
 
-    protected void selectVMClass(String VMClass) {
-        scrollToElement(VMClassDropdown).click();
+    public CloudGooglePricingCalculatorPage selectVMClass(String VMClass) {
+        VMClassDropdown.click();
         selectDropdownOption(VMClass);
+        return this;
     }
 
-    protected void selectInstanceSeries(String series) {
-        scrollToElement(instanceSeriesDropdown).click();
+    public CloudGooglePricingCalculatorPage selectInstanceSeries(String series) {
+        instanceSeriesDropdown.click();
         selectDropdownOption(series);
+        return this;
     }
 
-    protected void selectInstanceType(String instanceType) {
-        scrollToElement(instanceTypeDropdown).click();
+    public CloudGooglePricingCalculatorPage selectInstanceType(String instanceType) {
+        instanceTypeDropdown.click();
         selectDropdownOption(instanceType);
+        return this;
     }
 
-    protected void selectGPUType(String GPUType) {
-        scrollToElement(wait.presenceOfElementLocated(By.xpath("//md-select[contains(@aria-label, 'GPU type')]"))).click();
+    public CloudGooglePricingCalculatorPage selectAddGPUsCheckBox() {
+        addGPUsCheckBox.click();
+        return this;
+    }
+
+    public CloudGooglePricingCalculatorPage selectGPUType(String GPUType) {
+        waitPresenceOfElementLocated(GPUTypeDropdown).click();
         selectDropdownOption(GPUType);
+        return this;
     }
 
-    protected void selectNumberOfGPUs(String numberOfGPUs) {
-        scrollToElement(numberOfGPUsDropdown).click();
+    public CloudGooglePricingCalculatorPage selectNumberOfGPUs(String numberOfGPUs) {
+        numberOfGPUsDropdown.click();
         selectDropdownOption(numberOfGPUs);
+        return this;
     }
 
-    protected void selectLocalSSD(String localSSD) {
-        scrollToElement(localSSDDropdown).click();
+    public CloudGooglePricingCalculatorPage selectLocalSSD(String localSSD) {
+        localSSDDropdown.click();
         selectDropdownOption(localSSD);
+        return this;
     }
 
-    protected void selectDatacenterLocation(String datacenterLocation) {
-        scrollToElement(datacenterLocationDropdown).click();
+    public CloudGooglePricingCalculatorPage selectDatacenterLocation(String datacenterLocation) {
+        datacenterLocationDropdown.click();
         selectDropdownOption(datacenterLocation);
+        return this;
     }
 
-    protected void selectCommittedUsageTime(String committedUsage) {
-        scrollToElement(committedUsageDropdown).click();
+    public CloudGooglePricingCalculatorPage selectCommittedUsageTime(String committedUsage) {
+        committedUsageDropdown.click();
         selectDropdownOption(committedUsage);
+        return this;
     }
 
-    private CalculatorFormTestData returnActualCalculatedData() {
+    public CloudGooglePricingCalculatorPage clickAddToEstimateButton() {
+        addToEstimateButton.click();
+        return this;
+    }
+
+    public CalculatorFormTestData returnActualCalculatedData() {
         CalculatorFormTestData actualCalculatedData = new CalculatorFormTestData();
-        actualCalculatedData.setVMClass(wait.presenceOfElementLocated(By.xpath("//md-list-item[4]")).getText());
-        actualCalculatedData.setInstanceType(wait.presenceOfElementLocated(By.xpath("//md-list-item[5]")).getText());
-        actualCalculatedData.setRegionDatacenterLocation(wait.presenceOfElementLocated(By.xpath("//md-list-item[1]")).getText());
-        actualCalculatedData.setLocalSSD(wait.presenceOfElementLocated(By.xpath("//md-list-item[8]")).getText());
-        actualCalculatedData.setCommittedUsage(wait.presenceOfElementLocated(By.xpath("//md-list-item[3]")).getText());
-        actualCalculatedData.setEstimatedComponentCostPerMonth(wait.presenceOfElementLocated(By.xpath("//md-list-item[9]")).getText());
+        actualCalculatedData.setVMClass(waitPresenceOfElementLocated(By.xpath("//md-list-item[4]")).getText());
+        actualCalculatedData.setInstanceType(waitPresenceOfElementLocated(By.xpath("//md-list-item[5]")).getText());
+        actualCalculatedData.setRegionDatacenterLocation(waitPresenceOfElementLocated(By.xpath("//md-list-item[1]")).getText());
+        actualCalculatedData.setLocalSSD(waitPresenceOfElementLocated(By.xpath("//md-list-item[8]")).getText());
+        actualCalculatedData.setCommittedUsage(waitPresenceOfElementLocated(By.xpath("//md-list-item[3]")).getText());
+        actualCalculatedData.setEstimatedComponentCostPerMonth(waitPresenceOfElementLocated(By.xpath("//md-list-item[9]")).getText());
         return actualCalculatedData;
     }
 
